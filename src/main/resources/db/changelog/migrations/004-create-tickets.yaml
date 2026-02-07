@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-tickets
+      author: exam
+      changes:
+        - createTable:
+            tableName: tickets
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: title
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: CLOB
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: agent_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: category_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: tickets
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_tickets_user
+
+        - addForeignKeyConstraint:
+            baseTableName: tickets
+            baseColumnNames: agent_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_tickets_agent
+
+        - addForeignKeyConstraint:
+            baseTableName: tickets
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: id
+            constraintName: fk_tickets_category
