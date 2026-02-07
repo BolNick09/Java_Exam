@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-insert-admin
+      author: exam
+      changes:
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: Administrator
+
+              - column:
+                  name: email
+                  value: admin@exam.local
+
+              - column:
+                  name: password
+                  value: $2a$10$efAnuhgVbN2TcKIihwSVueP3dRXxGr3d9K003Ml4/FbNEBFCTSVNO
+              # пароль: admin123
+
+              - column:
+                  name: role_id
+                  valueComputed: "(select id from roles where name = 'ADMIN')"

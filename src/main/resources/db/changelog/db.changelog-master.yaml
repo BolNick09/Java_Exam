@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/migrations/004-create-tickets.yaml
   - include:
       file: db/changelog/migrations/005-create-comments.yaml
+  - include:
+      file: db/changelog/migrations/006-insert-admin.yaml
