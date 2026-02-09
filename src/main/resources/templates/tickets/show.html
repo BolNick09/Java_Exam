@@ -22,6 +22,24 @@
 
 <hr>
 
+<h3>Комментарии</h3>
+
+<div th:each="comment : ${ticket.comments}">
+    <p>
+        <b th:text="${comment.author.email}"></b>
+        <small th:text="${#temporals.format(comment.createdAt, 'dd.MM.yyyy HH:mm')}"></small>
+    </p>
+    <p th:text="${comment.text}"></p>
+    <hr>
+</div>
+
+<form th:action="@{/tickets/{id}/comments(id=${ticket.id})}" method="post">
+    <textarea name="text" required rows="4" cols="60"></textarea><br>
+    <button type="submit">Добавить комментарий</button>
+</form>
+
+<hr>
+
 <a href="/tickets">← Назад к списку</a>
 
 </body>
