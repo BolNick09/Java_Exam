@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket</title>
+</head>
+<body>
+
+<h1>Тикет #<span th:text="${ticket.id}"></span></h1>
+
+<p><b>Заголовок:</b> <span th:text="${ticket.title}"></span></p>
+<p><b>Описание:</b></p>
+<p th:text="${ticket.description}"></p>
+
+<p><b>Статус:</b> <span th:text="${ticket.status}"></span></p>
+<p><b>Пользователь:</b> <span th:text="${ticket.user.email}"></span></p>
+
+<p>
+    <b>Агент:</b>
+    <span th:text="${ticket.agent != null ? ticket.agent.email : 'Не назначен'}"></span>
+</p>
+
+<hr>
+
+<a href="/tickets">← Назад к списку</a>
+
+</body>
+</html>
