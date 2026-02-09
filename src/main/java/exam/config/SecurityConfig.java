@@ -20,16 +20,25 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/css/**").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/login",
+                                "/register",
+                                "/error",
+                                "/css/**",
+                                "/js/**"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                 );
 
