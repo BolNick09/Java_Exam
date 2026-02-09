@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h1>Dashboard</h1>
+
+<!-- USER -->
+<div th:if="${role == 'USER'}">
+    <p>Ваши тикеты: <b th:text="${ticketCount}"></b></p>
+</div>
+
+<!-- AGENT -->
+<div th:if="${role == 'AGENT'}">
+    <p>Назначенные вам тикеты: <b th:text="${ticketCount}"></b></p>
+</div>
+
+<!-- ADMIN -->
+<div th:if="${role == 'ADMIN'}">
+    <p>Всего тикетов: <b th:text="${totalTickets}"></b></p>
+    <p>Открытые: <b th:text="${openTickets}"></b></p>
+    <p>В работе: <b th:text="${inProgressTickets}"></b></p>
+    <p>Закрытые: <b th:text="${closedTickets}"></b></p>
+</div>
+
+<p>
+    <a href="/logout">Logout</a>
+</p>
+
+</body>
+</html>
