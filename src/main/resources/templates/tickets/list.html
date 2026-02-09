@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tickets</title>
+</head>
+<body>
+
+<h1>Tickets</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Заголовок</th>
+        <th>Статус</th>
+        <th>Пользователь</th>
+        <th>Агент</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.id}"></td>
+        <td th:text="${ticket.title}"></td>
+        <td th:text="${ticket.status}"></td>
+        <td th:text="${ticket.user.email}"></td>
+        <td th:text="${ticket.agent != null ? ticket.agent.email : '-'}"></td>
+        <td>
+            <a th:href="@{/tickets/{id}(id=${ticket.id})}">
+                Открыть
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <a href="/dashboard">← Dashboard</a>
+</p>
+
+</body>
+</html>
