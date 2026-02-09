@@ -1,7 +1,9 @@
 package exam.controller;
 
+import exam.model.Comment;
 import exam.model.Ticket;
 import exam.model.User;
+import exam.repository.CommentRepository;
 import exam.repository.TicketRepository;
 import exam.security.CustomUserDetails;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -18,9 +22,11 @@ import java.util.List;
 public class TicketController {
 
     private final TicketRepository ticketRepository;
+    private final CommentRepository commentRepository;
 
-    public TicketController(TicketRepository ticketRepository) {
+    public TicketController(TicketRepository ticketRepository, CommentRepository commentRepository) {
         this.ticketRepository = ticketRepository;
+        this.commentRepository = commentRepository;
     }
 
     @GetMapping("/tickets")
@@ -78,5 +84,45 @@ public class TicketController {
         model.addAttribute("role", role);
 
         return "tickets/show";
+    }
+
+
+    @PostMapping("/tickets/{id}/comments")
+    public String addComment(
+            @PathVariable Long id,
+            @RequestParam String text,
+            Authentication authentication
+    ) {
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
+        User currentUser = userDetails.getUser();
+
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        String role = currentUser.getRole().getName();
+
+        boolean allowed = switch (role) {
+            case "ADMIN" -> true;
+            case "USER" ->
+                    ticket.getUser().getId().equals(currentUser.getId());
+            case "AGENT" ->
+                    ticket.getAgent() != null &&
+                            ticket.getAgent().getId().equals(currentUser.getId());
+            default -> false;
+        };
+
+        if (!allowed) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        Comment comment = new Comment();
+        comment.setTicket(ticket);
+        comment.setAuthor(currentUser);
+        comment.setText(text);
+
+        commentRepository.save(comment);
+
+        return "redirect:/tickets/" + id;
     }
 }
