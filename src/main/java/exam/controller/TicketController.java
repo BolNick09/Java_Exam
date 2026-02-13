@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -63,38 +64,37 @@ public class TicketController {
             @RequestParam String text,
             Authentication authentication
     ) {
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
-        User currentUser = userDetails.getUser();
-
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        String role = currentUser.getRole().getName();
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+        String role = user.getRole().getName();
 
-        boolean allowed = switch (role) {
-            case "ADMIN" -> true;
-            case "USER" ->
-                    ticket.getUser().getId().equals(currentUser.getId());
-            case "AGENT" ->
-                    ticket.getAgent() != null &&
-                            ticket.getAgent().getId().equals(currentUser.getId());
-            default -> false;
-        };
+        // Защита доступа
+        if ("USER".equals(role)) {
+            if (!ticket.getUser().getId().equals(user.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        }
 
-        if (!allowed) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if ("AGENT".equals(role)) {
+            if (ticket.getAgent() == null ||
+                    !ticket.getAgent().getId().equals(user.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
         }
 
         Comment comment = new Comment();
-        comment.setTicket(ticket);
-        comment.setAuthor(currentUser);
         comment.setText(text);
+        comment.setTicket(ticket);
+        comment.setAuthor(user);
+        comment.setCreatedAt(LocalDateTime.now());
 
         commentRepository.save(comment);
 
         return "redirect:/tickets/" + id;
     }
+
 
     @GetMapping("/tickets/new")
     public String newTicket(Model model) {
