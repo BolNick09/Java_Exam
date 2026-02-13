@@ -56,41 +56,6 @@ public class TicketController {
 
         return "tickets/list";
     }
-    @GetMapping("/tickets/{id}")
-    public String ticketDetails(
-            @PathVariable Long id,
-            Authentication authentication,
-            Model model
-    ) {
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
-        User currentUser = userDetails.getUser();
-
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        String role = currentUser.getRole().getName();
-
-        boolean allowed = switch (role) {
-            case "ADMIN" -> true;
-            case "USER" ->
-                    ticket.getUser().getId().equals(currentUser.getId());
-            case "AGENT" ->
-                    ticket.getAgent() != null &&
-                            ticket.getAgent().getId().equals(currentUser.getId());
-            default -> false;
-        };
-
-        if (!allowed) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-
-        model.addAttribute("ticket", ticket);
-        model.addAttribute("role", role);
-
-        return "tickets/show";
-    }
-
 
     @PostMapping("/tickets/{id}/comments")
     public String addComment(
@@ -155,6 +120,40 @@ public class TicketController {
         ticketRepository.save(ticket);
         return "redirect:/tickets";
     }
+    @GetMapping("/tickets/{id}")
+    public String showTicket(
+            @PathVariable Long id,
+            Model model,
+            Authentication authentication
+    ) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+        String role = user.getRole().getName();
+
+        // USER: только свои тикеты
+        if ("USER".equals(role)) {
+            if (!ticket.getUser().getId().equals(user.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        }
+
+        // AGENT: только назначенные
+        if ("AGENT".equals(role)) {
+            if (ticket.getAgent() == null ||
+                    !ticket.getAgent().getId().equals(user.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        }
+
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("comments", ticket.getComments());
+
+        return "tickets/show";
+    }
+
+
 
 
 }

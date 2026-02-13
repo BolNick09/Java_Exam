@@ -98,4 +98,11 @@ public class Ticket {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
