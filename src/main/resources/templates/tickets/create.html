@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tickets</title>
+</head>
+<body>
+<form th:action="@{/tickets}" th:object="${ticket}" method="post">
+
+    <label>Тема</label><br>
+    <input type="text" th:field="*{title}" required><br><br>
+
+    <label>Описание</label><br>
+    <textarea th:field="*{description}" required></textarea><br><br>
+
+    <label>Категория</label><br>
+    <select name="categoryId" required>
+        <option value="">-- выберите категорию --</option>
+        <option th:each="cat : ${categories}"
+                th:value="${cat.id}"
+                th:text="${cat.name}">
+        </option>
+    </select><br><br>
+
+    <button type="submit">Создать</button>
+</form>
+</body>
+</html>

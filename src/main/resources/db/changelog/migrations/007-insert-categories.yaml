@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-insert-default-categories
+      author: exam
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: "Технические"
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: "Финансовые"
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: "Прочие"

@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/migrations/005-create-comments.yaml
   - include:
       file: db/changelog/migrations/006-insert-admin.yaml
+  - include:
+      file: db/changelog/migrations/007-insert-categories.yaml
