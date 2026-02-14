@@ -22,6 +22,21 @@
 
 <hr>
 
+<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <h4>Назначить агента</h4>
+
+    <form th:action="@{/tickets/{id}/assign(id=${ticket.id})}" method="post">
+        <select name="agentId" required>
+            <option value="">-- выбрать агента --</option>
+            <option th:each="agent : ${agents}"
+                    th:value="${agent.id}"
+                    th:text="${agent.name}">
+            </option>
+        </select>
+        <button type="submit">Назначить</button>
+    </form>
+</div>
+
 <h3>Комментарии</h3>
 
 <div th:each="comment : ${ticket.comments}">

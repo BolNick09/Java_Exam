@@ -7,6 +7,7 @@ import exam.model.User;
 import exam.repository.CategoryRepository;
 import exam.repository.CommentRepository;
 import exam.repository.TicketRepository;
+import exam.repository.UserRepository;
 import exam.security.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -28,11 +29,13 @@ public class TicketController {
     private final TicketRepository ticketRepository;
     private final CommentRepository commentRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
-    public TicketController(TicketRepository ticketRepository, CommentRepository commentRepository, CategoryRepository categoryRepository) {
+    public TicketController(TicketRepository ticketRepository, CommentRepository commentRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
         this.ticketRepository = ticketRepository;
         this.commentRepository = commentRepository;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/tickets")
@@ -147,10 +150,45 @@ public class TicketController {
             }
         }
 
+        if ("ADMIN".equals(role)) {
+            model.addAttribute("agents",
+                    userRepository.findByRole_Name("AGENT"));
+        }
+
         model.addAttribute("ticket", ticket);
         model.addAttribute("comments", ticket.getComments());
 
         return "tickets/show";
+    }
+
+    @PostMapping("/tickets/{id}/assign")
+    public String assignAgent(
+            @PathVariable Long id,
+            @RequestParam Long agentId,
+            Authentication authentication
+    ) {
+        User admin = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        if (!"ADMIN".equals(admin.getRole().getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        User agent = userRepository.findById(agentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!"AGENT".equals(agent.getRole().getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        ticket.setAgent(agent);
+        ticket.setStatus("IN_PROGRESS");
+
+        ticketRepository.save(ticket);
+
+        return "redirect:/tickets/" + id;
     }
 
 
