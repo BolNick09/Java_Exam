@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Пользователи</title>
+</head>
+<body>
+
+<h2>Управление пользователями</h2>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Имя</th>
+        <th>Email</th>
+        <th>Роль</th>
+        <th>Изменить</th>
+    </tr>
+
+    <tr th:each="user : ${users}">
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.role.name}"></td>
+
+        <td>
+            <form th:action="@{/admin/users/{id}/role(id=${user.id})}" method="post">
+                <select name="roleId">
+                    <option th:each="role : ${roles}"
+                            th:value="${role.id}"
+                            th:text="${role.name}"
+                            th:selected="${role.id == user.role.id}">
+                    </option>
+                </select>
+                <button type="submit">Сохранить</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

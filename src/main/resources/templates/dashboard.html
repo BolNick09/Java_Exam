@@ -25,6 +25,9 @@
     <p>В работе: <b th:text="${inProgressTickets}"></b></p>
     <p>Закрытые: <b th:text="${closedTickets}"></b></p>
 </div>
+<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <a href="/admin/users">Управление пользователями</a>
+</div>
 
 <p>
     <a href="/logout">Logout</a>
