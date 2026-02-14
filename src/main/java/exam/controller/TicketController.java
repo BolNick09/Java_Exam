@@ -191,6 +191,40 @@ public class TicketController {
         return "redirect:/tickets/" + id;
     }
 
+    @PostMapping("/tickets/{id}/status")
+    public String updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status,
+            Authentication authentication
+    ) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
+        User currentUser = userDetails.getUser();
+
+        String role = currentUser.getRole().getName();
+
+        // --- проверка прав ---
+        if (role.equals("AGENT")) {
+            if (ticket.getAgent() == null ||
+                    !ticket.getAgent().getId().equals(currentUser.getId())) {
+                throw new RuntimeException("Access denied");
+            }
+        }
+
+        if (role.equals("USER")) {
+            throw new RuntimeException("Access denied");
+        }
+
+        // --- обновление ---
+        ticket.setStatus(status);
+        ticketRepository.save(ticket);
+
+        return "redirect:/tickets/" + id;
+    }
+
 
 
 

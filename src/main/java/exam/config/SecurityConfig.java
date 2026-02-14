@@ -29,10 +29,16 @@ public class SecurityConfig {
                                 "/js/**"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
                         .requestMatchers("/tickets/new")
                         .hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers("/tickets/*/status")
+                        .hasAnyRole("AGENT", "ADMIN")
+
                         .requestMatchers("/tickets", "/tickets/**")
                         .hasAnyRole("USER", "AGENT", "ADMIN")
+
                         .requestMatchers("/register").permitAll()
                         .anyRequest().authenticated()
                 )

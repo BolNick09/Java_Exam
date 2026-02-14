@@ -13,6 +13,22 @@
 <p th:text="${ticket.description}"></p>
 
 <p><b>Статус:</b> <span th:text="${ticket.status}"></span></p>
+<div th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''AGENT'')')}">
+
+    <form th:action="@{/tickets/{id}/status(id=${ticket.id})}" method="post">
+
+        <label>Статус:</label>
+        <select name="status">
+            <option value="OPEN" th:selected="${ticket.status == 'OPEN'}">OPEN</option>
+            <option value="IN_PROGRESS" th:selected="${ticket.status == 'IN_PROGRESS'}">IN_PROGRESS</option>
+            <option value="RESOLVED" th:selected="${ticket.status == 'RESOLVED'}">RESOLVED</option>
+            <option value="CLOSED" th:selected="${ticket.status == 'CLOSED'}">CLOSED</option>
+        </select>
+
+        <button type="submit">Изменить статус</button>
+    </form>
+</div>
+
 <p><b>Пользователь:</b> <span th:text="${ticket.user.email}"></span></p>
 
 <p>
