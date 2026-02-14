@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Категории</title>
+</head>
+<body>
+
+<h2>Категории тикетов</h2>
+
+<form th:action="@{/admin/categories}" th:object="${category}" method="post">
+    <input type="text" th:field="*{name}" placeholder="Название категории" required>
+    <button type="submit">Добавить</button>
+</form>
+
+<p th:if="${param.error}">
+    Категория с таким именем уже существует
+</p>
+
+<hr>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+    </tr>
+
+    <tr th:each="cat : ${categories}">
+        <td th:text="${cat.id}"></td>
+        <td th:text="${cat.name}"></td>
+    </tr>
+</table>
+
+</body>
+</html>
