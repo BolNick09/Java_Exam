@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam — система тикетов</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="center-box">
+    <h1>Exam</h1>
+    <p>Единая система поддержки пользователей</p>
+
+    <div class="actions">
+        <a href="/login" class="btn">Войти</a>
+        <a href="/register" class="btn btn-secondary">Регистрация</a>
+    </div>
+</div>
+
+<form th:action="@{/logout}" method="post">
+    <button class="btn btn-logout">Выйти</button>
+</form>
+
+</body>
+</html>

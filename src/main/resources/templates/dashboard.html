@@ -31,10 +31,9 @@
     <a href="/admin/categories">Управление категориями</a>
 </div>
 
-
-<p>
-    <a href="/logout">Logout</a>
-</p>
+<form th:action="@{/logout}" method="post">
+    <button class="btn btn-logout">Выйти</button>
+</form>
 
 </body>
 </html>
