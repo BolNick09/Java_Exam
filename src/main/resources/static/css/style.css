@@ -1,0 +1,113 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f4f6f8;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* layout */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+/* headers */
+h1, h2 {
+    margin-top: 0;
+}
+
+/* buttons */
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #1976d2;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #125aa0;
+}
+
+.btn-secondary {
+    background: #555;
+}
+
+.btn-secondary:hover {
+    background: #333;
+}
+
+.btn-logout {
+    background: #c62828;
+}
+
+.btn-logout:hover {
+    background: #9b1c1c;
+}
+
+/* tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #f0f0f0;
+}
+
+/* forms */
+input, select, textarea {
+    width: 100%;
+    padding: 7px;
+    margin-bottom: 12px;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* header */
+.top-bar {
+    background: #1976d2;
+    color: white;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* index */
+.center-box {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
